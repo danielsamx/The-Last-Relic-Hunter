@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El último cazador de reliquias</title>
+    
+    <!-- Google Fonts Preconnect and Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+    
+    <script src="src/scenes/presentation.js"></script>
+    <script src="src/scenes/menu.js"></script>
+    <script src="src/scenes/gameplay.js"></script>
+    <script src="src/main.js"></script>
+    
+    <style>
+        body {
+            background-color: #100e17;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Force browser to load the webfonts immediately */
+        .font-preload {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            height: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .f1 { font-family: 'Press Start 2P', cursive; }
+        .f2 { font-family: 'Silkscreen', sans-serif; }
+        .f3 { font-family: 'VT323', monospace; }
+        .f4 { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+    <!-- Hidden elements to force font loading -->
+    <div class="font-preload">
+        <span class="f1">.</span>
+        <span class="f2">.</span>
+        <span class="f3">.</span>
+        <span class="f4">.</span>
+    </div>
+</body>
+</html>
