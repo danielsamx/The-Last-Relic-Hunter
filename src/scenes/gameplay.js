@@ -491,12 +491,14 @@ class Gameplay extends Phaser.Scene {
         this.cameras.main.shake(500, 0.015);
         this.cameras.main.flash(400, 183, 9, 76);
 
-        // Flash message
-        const bossText = this.add.text(640, 180, '¡EGREGOR HA DESPERTADO!', {
-            font: '24px "Press Start 2P"',
-            fill: '#b7094c',
-            stroke: '#000000',
-            strokeThickness: 6
+        // Flash message (Modern high-tech emergency alert)
+        const bossText = this.add.text(640, 180, 'ALERTA: EGREGOR HA DESPERTADO', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '24px',
+            color: '#ff3300',
+            letterSpacing: 4,
+            shadow: { offsetX: 0, offsetY: 2, color: '#000000', blur: 6 }
         }).setOrigin(0.5).setScrollFactor(0);
 
         this.tweens.add({
@@ -662,11 +664,12 @@ class Gameplay extends Phaser.Scene {
         const weaponsLabels = ['LA CENTELLA', 'LA ROMPEHUESOS', 'LA PERFORADORA'];
         const weaponColors = ['#00f0ff', '#ff9f1c', '#b7094c'];
 
-        const popupText = this.add.text(player.x, player.y - 40, `${weaponsLabels[this.activeWeapon]} DESBLOQUEADA!`, {
-            font: '13px "Press Start 2P"',
-            fill: weaponColors[this.activeWeapon],
-            stroke: '#000000',
-            strokeThickness: 3
+        const popupText = this.add.text(player.x, player.y - 40, `${weaponsLabels[this.activeWeapon]} ADQUIRIDA`, {
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+            fontSize: '12px',
+            color: weaponColors[this.activeWeapon],
+            letterSpacing: 2
         }).setOrigin(0.5);
 
         this.tweens.add({
@@ -691,23 +694,54 @@ class Gameplay extends Phaser.Scene {
         this.hudContainer.add(topBar);
 
         // Level name
-        const lvlName = this.add.text(30, 15, `${this.cfg.name.toUpperCase()} (${this.cfg.env.toUpperCase()})`, {
-            font: '14px "Press Start 2P"',
-            fill: '#ffffff'
+        // Level name (Futuristic system style)
+        const lvlName = this.add.text(30, 16, `${this.cfg.name.toUpperCase()} // ${this.cfg.env.toUpperCase()}`, {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '13px',
+            color: '#ffffff',
+            letterSpacing: 2
         });
         this.hudContainer.add(lvlName);
 
-        // Score tracker
-        this.hudScoreText = this.add.text(640, 15, `ALMAS: 0/${this.cfg.targetScore}`, {
-            font: '14px "Press Start 2P"',
-            fill: '#ffd700'
+        // Score tracker (Glowing cyber-counter)
+        this.hudScoreText = this.add.text(640, 16, `ALMAS ADQUIRIDAS: 0 / ${this.cfg.targetScore}`, {
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+            fontSize: '14px',
+            color: '#9d4edd',
+            letterSpacing: 2
         }).setOrigin(0.5, 0);
         this.hudContainer.add(this.hudScoreText);
 
-        // Esc menu prompt
-        const escPrompt = this.add.text(1250, 18, 'MENU [ESC]', {
-            font: '11px "Silkscreen"',
-            fill: '#a0a0a0'
+        // Interactive volume mute button next to ESC
+        const isMuted = window.RelicAudio ? window.RelicAudio.isMuted : false;
+        const volText = isMuted ? '🔊 ACTIVAR AUDIO' : '🔇 SILENCIAR';
+        const volBtn = this.add.text(1090, 18, volText, {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '600',
+            fontSize: '10px',
+            color: '#aaaaaa',
+            letterSpacing: 2
+        }).setOrigin(1, 0).setInteractive({ useHandCursor: true });
+        this.hudContainer.add(volBtn);
+
+        volBtn.on('pointerover', () => volBtn.setColor('#9d4edd'));
+        volBtn.on('pointerout', () => volBtn.setColor('#aaaaaa'));
+        volBtn.on('pointerdown', () => {
+            if (window.RelicAudio) {
+                const muted = window.RelicAudio.toggleMute();
+                volBtn.setText(muted ? '🔊 ACTIVAR AUDIO' : '🔇 SILENCIAR');
+            }
+        });
+
+        // Esc menu prompt (Futuristic modern label)
+        const escPrompt = this.add.text(1250, 18, '[ ESC ] ABANDONAR', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '500',
+            fontSize: '11px',
+            color: '#888888',
+            letterSpacing: 2
         }).setOrigin(1, 0);
         this.hudContainer.add(escPrompt);
 
@@ -720,7 +754,7 @@ class Gameplay extends Phaser.Scene {
         
         const wBox = this.add.graphics();
         wBox.fillStyle(0x0c0b11, 0.8);
-        wBox.lineStyle(2, 0x00f0ff, 0.5);
+        wBox.lineStyle(2, 0x9d4edd, 0.5);
         wBox.fillRoundedRect(-240, -50, 240, 60, 6);
         wBox.strokeRoundedRect(-240, -50, 240, 60, 6);
         this.weaponContainer.add(wBox);
@@ -728,13 +762,19 @@ class Gameplay extends Phaser.Scene {
         this.hudWeaponIcon = this.add.image(-200, -20, 'centella').setDisplaySize(48, 48);
         this.weaponContainer.add(this.hudWeaponIcon);
 
-        this.hudWeaponText = this.add.text(-150, -32, 'ARMA: CENTELLA', {
-            font: '10px "Press Start 2P"',
-            fill: '#ffffff'
+        this.hudWeaponText = this.add.text(-150, -32, 'SISTEMA DE ARMA: CENTELLA', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '10px',
+            color: '#ffffff',
+            letterSpacing: 1
         });
-        const wControlText = this.add.text(-150, -12, 'ABSORBE ALMAS PARA CAMBIAR', {
-            font: '10px "Silkscreen"',
-            fill: '#888888'
+        const wControlText = this.add.text(-150, -14, 'CAMBIO CICLO POR ALMA ADQUIRIDA', {
+            fontFamily: '"Inter", sans-serif',
+            fontWeight: '500',
+            fontSize: '9px',
+            color: '#888888',
+            letterSpacing: 1
         });
         this.weaponContainer.add([this.hudWeaponText, wControlText]);
 
@@ -751,9 +791,12 @@ class Gameplay extends Phaser.Scene {
         this.bossHpBarGraphic = this.add.graphics();
         this.bossHpContainer.add(this.bossHpBarGraphic);
 
-        const bossLabel = this.add.text(0, -32, 'EGREGOR — DIOS DE LA GRIETA', {
-            font: '12px "Press Start 2P"',
-            fill: '#b7094c'
+        const bossLabel = this.add.text(0, -32, 'ENTIDAD SUPREMA: EGREGOR // AMENAZA NÚCLEO', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '12px',
+            color: '#ff3300',
+            letterSpacing: 3
         }).setOrigin(0.5);
         this.bossHpContainer.add(bossLabel);
     }
@@ -761,8 +804,9 @@ class Gameplay extends Phaser.Scene {
     updateHpDisplay() {
         this.heartContainer.removeAll(true);
 
-        const heartSize = 25;
-        const spacing = 35;
+        const barWidth = 35;
+        const barHeight = 8;
+        const spacing = 42;
 
         for (let i = 0; i < this.maxPlayerHp; i++) {
             const h = this.add.graphics();
@@ -771,28 +815,21 @@ class Gameplay extends Phaser.Scene {
             this.heartContainer.add(h);
 
             if (i < this.playerHp) {
-                // Red heart
-                h.fillStyle(0xff3333, 1);
-                h.lineStyle(1, 0xffffff, 1);
+                // High-tech glowing cyan/neon energy tick
+                h.fillStyle(0x00f0ff, 0.95);
+                h.lineStyle(1.5, 0xffffff, 0.9);
+                // Outer glow
+                h.fillStyle(0x00f0ff, 0.25);
+                h.fillRoundedRect(-1, -3, barWidth + 2, barHeight + 6, 2);
+                h.fillStyle(0x00f0ff, 0.95);
             } else {
-                // Empty heart outline
-                h.fillStyle(0x333333, 0.5);
-                h.lineStyle(1.5, 0x666666, 1);
+                // De-energized empty energy slot
+                h.fillStyle(0x22222a, 0.6);
+                h.lineStyle(1, 0x44444c, 0.7);
             }
 
-            // Draw a cute heart shape polygon
-            h.beginPath();
-            h.moveTo(0, -6);
-            h.lineTo(5, -12);
-            h.lineTo(12, -12);
-            h.lineTo(12, -6);
-            h.lineTo(0, 10);
-            h.lineTo(-12, -6);
-            h.lineTo(-12, -12);
-            h.lineTo(-5, -12);
-            h.closePath();
-            h.fillPath();
-            h.strokePath();
+            h.fillRoundedRect(0, 0, barWidth, barHeight, 2);
+            h.strokeRoundedRect(0, 0, barWidth, barHeight, 2);
         }
     }
 
@@ -832,58 +869,69 @@ class Gameplay extends Phaser.Scene {
         screenBg.strokeRect(30, 30, 1220, 660);
         overlay.add(screenBg);
 
-        const title = this.add.text(640, 240, 'MISIÓN CUMPLIDA', {
-            font: '32px "Press Start 2P"',
-            fill: '#ffd700',
-            stroke: '#000000',
-            strokeThickness: 8
+        const title = this.add.text(640, 230, 'MISIÓN COMPLETADA', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '36px',
+            color: '#9d4edd',
+            letterSpacing: 4,
+            shadow: { offsetX: 0, offsetY: 2, color: '#000000', blur: 6 }
         }).setOrigin(0.5);
 
-        const details = this.add.text(640, 320, `Has sellado la Grieta de Valdris y contenido la corrupción.\nLas almas cosechadas descansan finalmente en paz.`, {
-            font: '20px "VT323"',
-            fill: '#ffffff',
+        const details = this.add.text(640, 320, `La Grieta de Valdris ha sido sellada y la corrupción contenida con éxito.\nLas almas cosechadas descansan finalmente en paz.`, {
+            fontFamily: '"Inter", sans-serif',
+            fontWeight: '400',
+            fontSize: '15px',
+            color: '#ffffff',
             align: 'center',
-            lineSpacing: 10
+            lineSpacing: 8,
+            letterSpacing: 1
         }).setOrigin(0.5);
 
         overlay.add([title, details]);
 
         // REPLAY BUTTON
-        const replayBtn = this.add.text(480, 480, 'REINTENTAR', {
-            font: '14px "Press Start 2P"',
-            fill: '#ffffff'
+        const replayBtn = this.add.text(480, 480, 'REINICIAR RETO', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '12px',
+            color: '#ffffff',
+            letterSpacing: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         
         const rBox = this.add.graphics();
-        rBox.lineStyle(2, 0xffd700, 0.6);
-        rBox.fillStyle(0x100e17, 0.9);
+        rBox.lineStyle(2, 0x9d4edd, 0.6); // Violet border
+        rBox.fillStyle(0x08070d, 0.96);
         rBox.fillRoundedRect(330, 450, 300, 60, 6);
         rBox.strokeRoundedRect(330, 450, 300, 60, 6);
         overlay.add([rBox, replayBtn]);
 
         // MENU BUTTON
         const menuBtn = this.add.text(800, 480, 'MENU PRINCIPAL', {
-            font: '14px "Press Start 2P"',
-            fill: '#ffffff'
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '12px',
+            color: '#ffffff',
+            letterSpacing: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         
         const mBox = this.add.graphics();
-        mBox.lineStyle(2, 0xffd700, 0.6);
-        mBox.fillStyle(0x100e17, 0.9);
+        mBox.lineStyle(2, 0x9d4edd, 0.6);
+        mBox.fillStyle(0x08070d, 0.96);
         mBox.fillRoundedRect(650, 450, 300, 60, 6);
         mBox.strokeRoundedRect(650, 450, 300, 60, 6);
         overlay.add([mBox, menuBtn]);
 
         // Buttons interaction
         replayBtn.on('pointerover', () => {
-            replayBtn.setStyle({ fill: '#ffd700' });
-            rBox.fillStyle(0xffd700, 0.15);
+            replayBtn.setStyle({ fill: '#9d4edd' });
+            rBox.fillStyle(0x9d4edd, 0.15);
             rBox.fillRoundedRect(330, 450, 300, 60, 6);
             rBox.strokeRoundedRect(330, 450, 300, 60, 6);
         });
         replayBtn.on('pointerout', () => {
             replayBtn.setStyle({ fill: '#ffffff' });
-            rBox.fillStyle(0x100e17, 0.9);
+            rBox.fillStyle(0x08070d, 0.96);
             rBox.fillRoundedRect(330, 450, 300, 60, 6);
             rBox.strokeRoundedRect(330, 450, 300, 60, 6);
         });
@@ -895,14 +943,14 @@ class Gameplay extends Phaser.Scene {
         });
 
         menuBtn.on('pointerover', () => {
-            menuBtn.setStyle({ fill: '#ffd700' });
-            mBox.fillStyle(0xffd700, 0.15);
+            menuBtn.setStyle({ fill: '#9d4edd' });
+            mBox.fillStyle(0x9d4edd, 0.15);
             mBox.fillRoundedRect(650, 450, 300, 60, 6);
             mBox.strokeRoundedRect(650, 450, 300, 60, 6);
         });
         menuBtn.on('pointerout', () => {
             menuBtn.setStyle({ fill: '#ffffff' });
-            mBox.fillStyle(0x100e17, 0.9);
+            mBox.fillStyle(0x08070d, 0.96);
             mBox.fillRoundedRect(650, 450, 300, 60, 6);
             mBox.strokeRoundedRect(650, 450, 300, 60, 6);
         });
@@ -943,44 +991,55 @@ class Gameplay extends Phaser.Scene {
         screenBg.strokeRect(30, 30, 1220, 660);
         overlay.add(screenBg);
 
-        const title = this.add.text(640, 240, 'MISIÓN FALLIDA', {
-            font: '32px "Press Start 2P"',
-            fill: '#b7094c',
-            stroke: '#000000',
-            strokeThickness: 8
+        const title = this.add.text(640, 230, 'CONEXIÓN PERDIDA // FALLO DE MISIÓN', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '32px',
+            color: '#ff3300',
+            letterSpacing: 4,
+            shadow: { offsetX: 0, offsetY: 2, color: '#000000', blur: 6 }
         }).setOrigin(0.5);
 
-        const details = this.add.text(640, 320, `Eamon ha caído en combate. La Grieta vuelve a abrirse...\nValdris ha sido devorado por Egregor y las sombras.`, {
-            font: '20px "VT323"',
-            fill: '#ffffff',
+        const details = this.add.text(640, 320, `El cazador Eamon ha caído en combate. La Grieta vuelve a abrirse...\nValdris ha sido devorado por la influencia destructora de Egregor.`, {
+            fontFamily: '"Inter", sans-serif',
+            fontWeight: '400',
+            fontSize: '15px',
+            color: '#ffffff',
             align: 'center',
-            lineSpacing: 10
+            lineSpacing: 8,
+            letterSpacing: 1
         }).setOrigin(0.5);
 
         overlay.add([title, details]);
 
         // REPLAY BUTTON
-        const replayBtn = this.add.text(480, 480, 'REINTENTAR', {
-            font: '14px "Press Start 2P"',
-            fill: '#ffffff'
+        const replayBtn = this.add.text(480, 480, 'REINICIAR RETO', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '12px',
+            color: '#ffffff',
+            letterSpacing: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         
         const rBox = this.add.graphics();
-        rBox.lineStyle(2, 0xb7094c, 0.6);
-        rBox.fillStyle(0x100e17, 0.9);
+        rBox.lineStyle(2, 0xff3300, 0.6); // Red emergency border
+        rBox.fillStyle(0x08070d, 0.96);
         rBox.fillRoundedRect(330, 450, 300, 60, 6);
         rBox.strokeRoundedRect(330, 450, 300, 60, 6);
         overlay.add([rBox, replayBtn]);
 
         // MENU BUTTON
         const menuBtn = this.add.text(800, 480, 'MENU PRINCIPAL', {
-            font: '14px "Press Start 2P"',
-            fill: '#ffffff'
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '12px',
+            color: '#ffffff',
+            letterSpacing: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         
         const mBox = this.add.graphics();
-        mBox.lineStyle(2, 0xb7094c, 0.6);
-        mBox.fillStyle(0x100e17, 0.9);
+        mBox.lineStyle(2, 0xff3300, 0.6);
+        mBox.fillStyle(0x08070d, 0.96);
         mBox.fillRoundedRect(650, 450, 300, 60, 6);
         mBox.strokeRoundedRect(650, 450, 300, 60, 6);
         overlay.add([mBox, menuBtn]);

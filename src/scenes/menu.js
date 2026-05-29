@@ -30,53 +30,39 @@ class Menu extends Phaser.Scene {
         vignette.fillStyle(0x0a090e, 0.55);
         vignette.fillRect(0, 0, width, height);
 
-        // Golden Frame around screen edges for premium feel
-        const frame = this.add.graphics();
-        frame.lineStyle(4, 0xffd700, 0.4);
-        frame.strokeRect(10, 10, width - 20, height - 20);
-        frame.lineStyle(1.5, 0x00f0ff, 0.3);
-        frame.strokeRect(15, 15, width - 30, height - 30);
-
-        // Retro CRT Scanlines
-        const scanlines = this.add.graphics();
-        scanlines.lineStyle(1, 0x000000, 0.15);
-        for (let y = 0; y < height; y += 4) {
-            scanlines.strokeLineShape(new Phaser.Geom.Line(0, y, width, y));
+        // Start procedural ambient soundtrack (auto-unlocked on user gesture)
+        if (window.RelicAudio) {
+            window.RelicAudio.start();
         }
 
-        // Particle Emitter for glowing embers floating up
+        // Particle Emitter for blue fire rising up
         this.sparkEmitter = this.add.particles(0, 0, 'spark', {
-            x: { min: 20, max: width - 20 },
-            y: height + 10,
-            lifespan: { min: 4000, max: 7000 },
-            speedY: { min: -15, max: -45 },
-            speedX: { min: -10, max: 10 },
-            scale: { start: 1.5, end: 0.1 },
-            alpha: { start: 0.5, end: 0 },
-            tint: [0xff9f1c, 0x00f0ff, 0xb7094c], // Ember colors (Orange, Cyan, Purple)
-            frequency: 100
+            x: { min: 0, max: width },
+            y: height + 15,
+            lifespan: { min: 1000, max: 2200 },
+            speedY: { min: -80, max: -220 }, // Rising velocity like flames
+            speedX: { min: -30, max: 30 },
+            scale: { start: 2.5, end: 0.2 }, // Starts medium/large and fades to small
+            alpha: { start: 0.6, end: 0 },
+            tint: [0x00f0ff, 0x0088ff, 0x00aaff, 0x0022ff], // Shaded blue fire
+            blendMode: 'ADD', // Additive blending for realistic glowing fire
+            frequency: 35
         });
-
         // 2. Title Text with float animation
         this.titleContainer = this.add.container(width / 2, 200);
 
-        const mainTitleShadow = this.add.text(2, 2, 'EL ÚLTIMO CAZADOR\nDE RELIQUIAS', {
-            font: '34px "Montserrat"',
-            fill: '#000000',
-            align: 'center',
-            lineSpacing: 10
-        }).setOrigin(0.5);
-
         const mainTitle = this.add.text(0, 0, 'EL ÚLTIMO CAZADOR\nDE RELIQUIAS', {
-            font: '34px "Montserrat"',
-            fill: '#ffd700',
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '52px',
+            fontWeight: '800',
+            color: '#ffffff',
             align: 'center',
             lineSpacing: 10,
-            stroke: '#100e17',
-            strokeThickness: 6
+            letterSpacing: 4,
+            shadow: { offsetX: 0, offsetY: 4, color: '#00f0ff', blur: 15, stroke: true }
         }).setOrigin(0.5);
 
-        this.titleContainer.add([mainTitleShadow, mainTitle]);
+        this.titleContainer.add(mainTitle);
 
         // Floating tween on the title
         this.tweens.add({
@@ -88,12 +74,13 @@ class Menu extends Phaser.Scene {
             ease: 'Sine.easeInOut'
         });
 
-        // Subtitle/Tagline
-        const subTitle = this.add.text(width / 2, 290, '— RECONSTRUYE TU ARSENAL. SELLA LA GRIETA. —', {
-            font: '12px "Montserrat"',
-            fill: '#a0a0ff',
-            stroke: '#000000',
-            strokeThickness: 2
+        // Subtitle/Tagline (Futuristic sleek cyan typography)
+        const subTitle = this.add.text(width / 2, 305, '— RECONSTRUYE TU ARSENAL · SELLA LA GRIETA —', {
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: '#00f0ff',
+            letterSpacing: 4
         }).setOrigin(0.5);
 
         // 3. Menu UI Buttons Container
@@ -122,21 +109,24 @@ class Menu extends Phaser.Scene {
 
     createMenuButton(x, y, text, callback) {
         const btnText = this.add.text(x, y, text, {
-            font: '18px "Montserrat"',
-            fill: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 4
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#ffffff',
+            letterSpacing: 4
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
         // Left and Right Arrow Indicators
         const leftArr = this.add.text(x - 200, y - 2, '◆', {
-            font: '18px "Montserrat"',
-            fill: '#00f0ff'
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '16px',
+            fill: '#9d4edd'
         }).setOrigin(0.5).setAlpha(0);
 
         const rightArr = this.add.text(x + 200, y - 2, '◆', {
-            font: '18px "Montserrat"',
-            fill: '#00f0ff'
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '16px',
+            fill: '#9d4edd'
         }).setOrigin(0.5).setAlpha(0);
 
         this.buttonsContainer.add([btnText, leftArr, rightArr]);
@@ -144,7 +134,7 @@ class Menu extends Phaser.Scene {
         btnText.on('pointerover', () => {
             if (this.modalContainer || this.levelSelectContainer) return;
             
-            btnText.setStyle({ fill: '#00f0ff' });
+            btnText.setStyle({ fill: '#9d4edd' });
             
             this.tweens.add({
                 targets: btnText,
@@ -220,16 +210,17 @@ class Menu extends Phaser.Scene {
 
         // Semi-transparent background panel
         const panelBg = this.add.graphics();
-        panelBg.fillStyle(0x0c0b11, 0.95);
-        panelBg.lineStyle(3, 0xffd700, 0.7);
+        panelBg.fillStyle(0x08070d, 0.96);
         panelBg.fillRoundedRect(120, 80, 1040, 560, 12);
-        panelBg.strokeRoundedRect(120, 80, 1040, 560, 12);
         this.levelSelectContainer.add(panelBg);
 
         // Header Title
         const header = this.add.text(640, 120, 'SELECCIÓN DE NIVEL', {
-            font: '24px "Montserrat"',
-            fill: '#ffd700'
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '22px',
+            color: '#ffffff',
+            letterSpacing: 4
         }).setOrigin(0.5);
         this.levelSelectContainer.add(header);
 
@@ -282,13 +273,27 @@ class Menu extends Phaser.Scene {
         this.levelSelectContainer.add(detailBox);
 
         // Detail elements
-        const lvlNumText = this.add.text(540, 185, '', { font: '14px "Montserrat"', fill: '#00f0ff' });
-        const lvlNameText = this.add.text(540, 215, '', { font: '24px "Montserrat"', fill: '#ffffff', style: 'bold' });
-        const lvlInfoText = this.add.text(540, 260, '', {
-            font: '19px "VT323"',
-            fill: '#e0e0e0',
-            wordWrap: { width: 560, useAdvancedWrap: true },
-            lineSpacing: 5
+        const lvlNumText = this.add.text(540, 190, '', { 
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '600',
+            fontSize: '12px',
+            color: '#9d4edd',
+            letterSpacing: 2
+        });
+        const lvlNameText = this.add.text(540, 215, '', { 
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '800',
+            fontSize: '24px',
+            color: '#ffffff',
+            letterSpacing: 1
+        });
+        const lvlInfoText = this.add.text(540, 265, '', {
+            fontFamily: '"Inter", sans-serif',
+            fontWeight: '400',
+            fontSize: '14px',
+            color: '#d0d2db',
+            wordWrap: { width: 540, useAdvancedWrap: true },
+            lineSpacing: 8
         });
         this.levelSelectContainer.add([lvlNumText, lvlNameText, lvlInfoText]);
 
@@ -369,18 +374,26 @@ ${lvl.desc}`
             this.levelBorders.push(border);
 
             // Container for text layers inside card
-            const numText = this.add.text(btnX + 20, btnY + 15, lvl.num, {
-                font: '11px "Montserrat"',
-                fill: '#888888'
+            const numText = this.add.text(btnX + 22, btnY + 16, lvl.num, {
+                fontFamily: '"Space Grotesk", sans-serif',
+                fontWeight: '600',
+                fontSize: '11px',
+                color: '#888888',
+                letterSpacing: 1
             });
-            const nameText = this.add.text(btnX + 20, btnY + 35, lvl.name, {
-                font: '20px "Montserrat"',
-                fill: '#ffffff',
-                style: 'bold'
+            const nameText = this.add.text(btnX + 22, btnY + 34, lvl.name, {
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: '700',
+                fontSize: '18px',
+                color: '#ffffff',
+                letterSpacing: 1
             });
-            const envText = this.add.text(btnX + 20, btnY + 65, lvl.env, {
-                font: '14px "VT323"',
-                fill: '#00f0ff'
+            const envText = this.add.text(btnX + 22, btnY + 62, lvl.env, {
+                fontFamily: '"Inter", sans-serif',
+                fontWeight: '500',
+                fontSize: '12px',
+                color: '#9d4edd',
+                letterSpacing: 2
             });
 
             this.levelSelectContainer.add([numText, nameText, envText]);
@@ -408,7 +421,7 @@ ${lvl.desc}`
                     border.fillStyle(0x100e17, 0.6);
                     border.strokeRoundedRect(0, 0, 340, 95, 6);
                     border.fillRoundedRect(0, 0, 340, 95, 6);
-                    envText.setStyle({ fill: '#00f0ff' });
+                    envText.setStyle({ fill: '#9d4edd' });
                 }
             });
 
@@ -422,8 +435,11 @@ ${lvl.desc}`
         this.levelSelectContainer.add(playBtnBg);
 
         const playText = this.add.text(640, 595, 'COMENZAR RETO', {
-            font: '14px "Montserrat"',
-            fill: '#ffffff'
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: '700',
+            fontSize: '13px',
+            color: '#ffffff',
+            letterSpacing: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         this.levelSelectContainer.add(playText);
 

@@ -5,13 +5,16 @@ window.onload = function () {
             type: Phaser.AUTO,
 
             scale: {
-                mode: Phaser.Scale.FIT,
+                mode: Phaser.Scale.STRETCH,
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 width: 1280,
-                height: 720
+                height: 720,
+                parent: 'game-container',
+                expandParent: true,
+                fullscreenTarget: 'game-container'
             },
 
-            backgroundColor: '#100e17',
+            backgroundColor: '#08070d',
 
             physics: {
                 default: 'arcade',
@@ -20,8 +23,13 @@ window.onload = function () {
                     debug: false
                 }
             },
-            scene: [ Menu, Presentation, Gameplay ],
-            pixelArt: true
+            
+            // Modern, realistic anti-aliased rendering (no retro pixel art filtering)
+            pixelArt: false,
+            antialias: true,
+            roundPixels: false,
+
+            scene: [ Menu, Presentation, Gameplay ]
         };
 
         new Phaser.Game(config);
