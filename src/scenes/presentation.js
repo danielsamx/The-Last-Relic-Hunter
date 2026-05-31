@@ -113,6 +113,7 @@ class Presentation extends Phaser.Scene {
         this.load.image('eamon-portrait', 'assets/eamon/eamon.png');
         this.load.image('eamon-action',   'assets/eamon/eamon-action.png');
         this.load.image('egregor',        'assets/egregor/egregor.png');
+        this.load.image('the-crack',        'assets/init/the-crack-environment.png');
         this.load.image('centella',       'assets/guns/centella/centella.png');
         this.load.image('perforadora',    'assets/guns/perforadora/perforadora.png');
         this.load.image('rompehuesos',    'assets/guns/rompehuesos/rompe-huesos.png');
@@ -368,42 +369,33 @@ class Presentation extends Phaser.Scene {
     // ------------------------------------------------------------
     buildSlideRift() {
         // Panel izquierdo para la imagen
-        const imgPanel = this.addModernPanel(40, 80, 450, 560, 0x080808);
-        
-        // Imagen Egregor - ajuste de tamaño para mejor visualización
-        const egregorImg = this.add.image(265, 360, 'egregor');
-        const targetHeight = 500;
-        const scale = targetHeight / egregorImg.height;
-        egregorImg.setScale(scale);
-        egregorImg.setPosition(265, 360);
-        egregorImg.setAlpha(0.95);
-        this.slideContainer.add(egregorImg);
-        
-        // Brillo en la imagen
-        const imgGlow = this.add.graphics();
-        imgGlow.strokeRect(40, 80, 450, 560);
-        this.slideContainer.add(imgGlow);
-        
-        // Panel derecho de contenido
-        const contentPanel = this.addModernPanel(520, 80, 720, 560, 0x0a0a0a);
+        const crackImg = this.add.image(265, 360, 'the-crack');
+        crackImg.setScale(1);
+        crackImg.setPosition(850, 380);
+        crackImg.setAlpha(1);
+        this.slideContainer.add(crackImg);
         
         // Título principal
-        const title = this.add.text(550, 120, 'EL CATACLISMO', {
+        const title = this.add.text(30, 60, 'EL CATACLISMO', {
             fontFamily: '"Montserrat", sans-serif',
             fontWeight: '800',
             fontSize: '52px',
             color: '#ffffff',
+            stroke: '#000000',       // Borde negro
+            strokeThickness: 10,  
             letterSpacing: 2,
             shadow: { offsetX: 0, offsetY: 2, color: '#000000', blur: 6 }
         });
         this.slideContainer.add(title);
         
         // Subtítulo con acento
-        const subtitle = this.add.text(550, 180, 'LA GRIETA', {
+        const subtitle = this.add.text(30, 120, 'LA GRIETA', {
             fontFamily: '"Montserrat", sans-serif',
             fontWeight: '300',
             fontSize: '28px',
-            color: '#00aaff',
+            color: '#ffffff',
+            stroke: '#000000',       // Borde negro
+            strokeThickness: 10,  
             letterSpacing: 4
         });
         this.slideContainer.add(subtitle);
@@ -415,25 +407,28 @@ Los No-Muertos, los Centinelas de Hierro, y sobre todos ellos, Egregor: un dios 
 
 Para contener la invasión, una orden secreta forjó tres armas capaces de absorber la esencia primigenia. Con ellas, los Cazadores de Reliquias defendieron Valdris. Pero la orden ha caído. El juramento permanece.`;
 
-        const descText = this.add.text(550, 230, '', {
+        const descText = this.add.text(30, 170, '', {
             fontFamily: '"Montserrat", sans-serif',
             fontWeight: '400',
             fontSize: '16px',
-            color: '#cccccc',
-            wordWrap: { width: 630, useAdvancedWrap: true },
+            color: '#ffffff',
+            stroke: '#000000',       // Borde negro
+            strokeThickness: 5,  
             lineSpacing: 8
         });
-        descText.setWordWrapWidth(630, true);
+        descText.setWordWrapWidth(400, true);
         this.slideContainer.add(descText);
         this.startTypewriter(descText, loreText);
         
         // Cita final
-        const quote = this.add.text(550, 610, '“No existe la oscuridad. Solo la ausencia de aquellos que portaron la luz.”', {
+        const quote = this.add.text(750, 610, '“No existe la oscuridad. Solo la ausencia de aquellos que portaron la luz.”', {
             fontFamily: '"Montserrat", sans-serif',
             fontStyle: 'italic',
             fontWeight: '300',
             fontSize: '13px',
-            color: '#666666',
+            color: '#ffffff',
+            stroke: '#000000',       // Borde negro
+            strokeThickness: 8,  
             wordWrap: { width: 630 }
         });
         quote.setWordWrapWidth(630, true);
