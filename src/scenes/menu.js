@@ -88,7 +88,7 @@ class Menu extends Phaser.Scene {
 
         // Button 1: Iniciar Juego
         this.createMenuButton(width / 2, 400, 'INICIAR AVENTURA', () => {
-            this.showLevelSelect();
+            this.startLevelDemo(2);
         });
 
         // Button 2: Historia y Reliquias
